@@ -1,0 +1,8 @@
+/target/
+/bin/
+*.bin
+*.elf
+*.img
+*.log
+*.sha256
+.env
