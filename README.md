@@ -1,7 +1,14 @@
 # RP1 HAL
 
-This repository is the workspace for future RP1 firmware HAL work. It does not
-yet contain a Cargo workspace or HAL implementation.
+This repository is the workspace for RP1 firmware HAL work. It currently
+contains shared ABI definitions and does not yet contain a full HAL
+implementation.
+
+## `rp1-abi`
+
+`crates/rp1-abi` defines the initial fixed `.note.rp1` ABI shared by RP1
+firmware images and the CM5 RP1 bootloader PoC. It is `#![no_std]` and currently
+contains only the boot note layout and owner bitmap device constants.
 
 ## Development Shell
 
@@ -23,7 +30,7 @@ The shell provides:
 - `xxd`
 - `dtc`
 
-Once a Cargo workspace exists, the standard build command is:
+The standard build command is:
 
 ```sh
 cargo build --target thumbv7m-none-eabi
@@ -35,5 +42,4 @@ The shell also provides a convenience wrapper:
 build-rp1-hal
 ```
 
-Until `Cargo.toml` is added, `build-rp1-hal` intentionally exits with an
-explanation instead of pretending a firmware build happened.
+`build-rp1-hal` runs the same target build through the Nix-provided toolchain.
