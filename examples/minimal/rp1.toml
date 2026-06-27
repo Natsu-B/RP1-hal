@@ -1,0 +1,18 @@
+[firmware]
+name = "minimal"
+
+[linux]
+mailbox = true
+pio = false
+
+[owner]
+gpio = "rp1"
+uart0 = "rp1"
+uart1 = "linux"
+i2c0 = "linux"
+i2c1 = "linux"
+spi0 = "linux"
+pio0 = "rp1"
+pio1 = "disabled"
+dma = "rp1"
+timer = "rp1"

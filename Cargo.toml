@@ -2,4 +2,9 @@
 resolver = "3"
 members = [
     "crates/rp1-abi",
+    "crates/rp1-build",
+    "crates/rp1-hal",
+    "crates/rp1-macros",
+    "crates/rp1-rt",
+    "examples/minimal",
 ]

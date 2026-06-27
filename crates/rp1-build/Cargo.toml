@@ -1,0 +1,9 @@
+[package]
+name = "rp1-build"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+rp1-abi = { path = "../rp1-abi" }
+serde = { version = "1", features = ["derive"] }
+toml = "0.8"
