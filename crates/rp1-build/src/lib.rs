@@ -185,24 +185,24 @@ mod tests {
     #[test]
     fn minimal_owner_bitmap_matches_expected_values() {
         let owner = BTreeMap::from([
-            ("gpio".to_string(), "rp1".to_string()),
-            ("uart0".to_string(), "rp1".to_string()),
+            ("gpio".to_string(), "linux".to_string()),
+            ("uart0".to_string(), "linux".to_string()),
             ("uart1".to_string(), "linux".to_string()),
             ("i2c0".to_string(), "linux".to_string()),
             ("i2c1".to_string(), "linux".to_string()),
             ("spi0".to_string(), "linux".to_string()),
             ("pio0".to_string(), "rp1".to_string()),
-            ("pio1".to_string(), "disabled".to_string()),
-            ("dma".to_string(), "rp1".to_string()),
-            ("timer".to_string(), "rp1".to_string()),
+            ("pio1".to_string(), "rp1".to_string()),
+            ("dma".to_string(), "linux".to_string()),
+            ("timer".to_string(), "linux".to_string()),
         ]);
 
         assert_eq!(
             owner_bitmap(&owner).unwrap(),
             OwnerBitmap {
-                owner_rp1: 0x343,
-                owner_linux: 0x3c,
-                owner_disabled: 0x80,
+                owner_rp1: 0xc0,
+                owner_linux: 0x33f,
+                owner_disabled: 0x0,
             }
         );
     }
@@ -210,16 +210,16 @@ mod tests {
     #[test]
     fn minimal_config_values_are_exposed() {
         let owner = BTreeMap::from([
-            ("gpio".to_string(), "rp1".to_string()),
-            ("uart0".to_string(), "rp1".to_string()),
+            ("gpio".to_string(), "linux".to_string()),
+            ("uart0".to_string(), "linux".to_string()),
             ("uart1".to_string(), "linux".to_string()),
             ("i2c0".to_string(), "linux".to_string()),
             ("i2c1".to_string(), "linux".to_string()),
             ("spi0".to_string(), "linux".to_string()),
             ("pio0".to_string(), "rp1".to_string()),
-            ("pio1".to_string(), "disabled".to_string()),
-            ("dma".to_string(), "rp1".to_string()),
-            ("timer".to_string(), "rp1".to_string()),
+            ("pio1".to_string(), "rp1".to_string()),
+            ("dma".to_string(), "linux".to_string()),
+            ("timer".to_string(), "linux".to_string()),
         ]);
         let owners = owner_bitmap(&owner).unwrap();
         let config = Rp1BuildConfig {
@@ -229,9 +229,9 @@ mod tests {
             mailbox_flags: 1,
             firmware_version_kind: RP1_VERSION_NON_PIO,
         };
-        assert_eq!(config.owner_rp1, 0x343);
-        assert_eq!(config.owner_linux, 0x3c);
-        assert_eq!(config.owner_disabled, 0x80);
+        assert_eq!(config.owner_rp1, 0xc0);
+        assert_eq!(config.owner_linux, 0x33f);
+        assert_eq!(config.owner_disabled, 0x0);
         assert_eq!(config.mailbox_flags, 1);
         assert_eq!(config.firmware_version_kind, 0);
     }
