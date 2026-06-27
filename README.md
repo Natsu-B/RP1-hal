@@ -37,6 +37,22 @@ The minimal owner bitmap generated from `examples/minimal/rp1.toml` is:
 owner_rp1      = 0x343
 owner_linux    = 0x3c
 owner_disabled = 0x80
+mailbox         = 0x1
+version_kind    = 0
+```
+
+To smoke-test the ELF with `RP1-bootloader-PoC`, copy the note-attached ELF to
+the TFTP root as `RP1.elf` and boot a TFTP-enabled PoC image:
+
+```sh
+cp target/thumbv7m-none-eabi/release/rp1-example-minimal-note.elf \
+  /opt/rpi-cm5-hack/tftpboot/RP1.elf
+```
+
+Expected UART marker:
+
+```text
+[RP1NOTE] valid: owner_rp1=0x343 owner_linux=0x3c owner_disabled=0x80 mailbox=0x1 version_kind=0
 ```
 
 ## Development Shell
