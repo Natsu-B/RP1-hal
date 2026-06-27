@@ -2,35 +2,15 @@
 
 pub use rp1_macros::main;
 
-pub mod prelude {
-    pub use crate::Peripherals;
-}
+pub mod addr;
+pub mod gpio;
+pub mod mailbox;
+pub mod mmio;
+pub mod owner;
+pub mod peripherals;
+pub mod prelude;
 
-pub struct Peripherals {
-    _private: (),
-}
-
-static mut PERIPHERALS_TAKEN: bool = false;
-
-impl Peripherals {
-    pub fn take() -> Option<Self> {
-        unsafe {
-            if PERIPHERALS_TAKEN {
-                None
-            } else {
-                PERIPHERALS_TAKEN = true;
-                Some(Self { _private: () })
-            }
-        }
-    }
-
-    pub unsafe fn steal() -> Self {
-        unsafe {
-            PERIPHERALS_TAKEN = true;
-        }
-        Self { _private: () }
-    }
-}
+pub use peripherals::Peripherals;
 
 pub fn init() -> Option<Peripherals> {
     Peripherals::take()

@@ -29,6 +29,19 @@ compatibility rules, and writes:
 target/rp1/release/RP1.elf
 ```
 
+The minimal example now exercises the first HAL API surface:
+
+- `Peripherals` owns `gpio`.
+- `gpio.pin::<0>().into_output()` type-checks as an owned GPIO output pin.
+- the loop calls `ConfiguredPin::toggle()` and `mailbox::poll()`.
+
+These are skeleton APIs. GPIO configuration and output methods are currently
+no-op because the RP1 GPIO register offsets have not yet been verified against
+the RP1 datasheet and Linux DTB. The mailbox module is also a version responder
+skeleton only: it exposes the non-PIO firmware version shape and reports
+`GET_FEATURE("PIO ")` as unsupported, but it is not connected to an RP1 mailbox
+shared buffer yet.
+
 Manual build fallback:
 
 ```sh

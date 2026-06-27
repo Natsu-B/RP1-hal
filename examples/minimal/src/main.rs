@@ -8,9 +8,15 @@ use rp1_rt as _;
 
 #[cfg(target_arch = "arm")]
 #[rp1_hal::main]
-fn main(_p: Peripherals) -> ! {
+fn main(mut p: Peripherals) -> ! {
+    let mut pin = p.gpio.pin::<0>().into_output();
+
     loop {
-        core::hint::spin_loop();
+        pin.toggle();
+        for _ in 0..10_000 {
+            core::hint::spin_loop();
+        }
+        rp1_hal::mailbox::poll();
     }
 }
 
