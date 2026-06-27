@@ -15,7 +15,21 @@ contains only the boot note layout and owner bitmap device constants.
 `examples/minimal` builds a `thumbv7m-none-eabi` no-std firmware ELF and uses
 `rp1-build` to generate an RP1 boot note from `examples/minimal/rp1.toml`.
 
-Build it:
+Recommended build flow:
+
+```sh
+nix develop
+cargo run -p cargo-rp1 -- build --example minimal
+```
+
+This builds the example, attaches `.note.rp1`, checks the minimal bootloader
+compatibility rules, and writes:
+
+```text
+target/rp1/release/RP1.elf
+```
+
+Manual build fallback:
 
 ```sh
 nix develop -c cargo build -p rp1-example-minimal --release --target thumbv7m-none-eabi
@@ -61,14 +75,15 @@ To smoke-test the ELF with `RP1-bootloader-PoC`, copy the note-attached ELF to
 the TFTP root as `RP1.elf` and boot a TFTP-enabled PoC image:
 
 ```sh
-cp target/thumbv7m-none-eabi/release/rp1-example-minimal-note.elf \
-  /opt/rpi-cm5-hack/tftpboot/RP1.elf
+cp target/rp1/release/RP1.elf /opt/rpi-cm5-hack/tftpboot/RP1.elf
 ```
 
-Expected UART marker:
+Expected UART markers:
 
 ```text
 [RP1NOTE] valid: owner_rp1=0x343 owner_linux=0x3c owner_disabled=0x80 mailbox=0x1 version_kind=0
+[RP1ELF] load_base=0x20000000 image_len=... entry=0x20000069 stack=0x100030d0
+[RP1BOOT] proc0 started
 ```
 
 ## Development Shell

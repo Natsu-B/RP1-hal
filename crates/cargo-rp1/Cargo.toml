@@ -1,0 +1,10 @@
+[package]
+name = "cargo-rp1"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+goblin = "0.9"
+rp1-build = { path = "../rp1-build" }
