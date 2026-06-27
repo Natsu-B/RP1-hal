@@ -31,6 +31,22 @@ tools/attach-rp1-note.sh \
   target/thumbv7m-none-eabi/release/rp1-example-minimal-note.elf
 ```
 
+Or build and attach the note in one step:
+
+```sh
+nix develop -c tools/build-minimal-note.sh
+```
+
+The firmware linker places all loadable segments in RP1 SRAM starting at
+`0x20000000`, so `RP1-bootloader-PoC` can materialize the ELF into a contiguous
+bootstrap image.
+
+Earlier minimal ELF builds kept `.bss` in a separate `PT_LOAD` at `0x20040000`.
+That address is outside the PoC RP1 materializer window, which starts at
+`0x20000000` and is capped at the RP1 bootstrap scratch size, so the bootloader
+reported `Rp1ImageInvalid`. The runtime linker script now keeps `.vector_table`,
+`.text`, `.data`, and `.bss` in the same 64 KiB RP1 SRAM image.
+
 The minimal owner bitmap generated from `examples/minimal/rp1.toml` is:
 
 ```text
