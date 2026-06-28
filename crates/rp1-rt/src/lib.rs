@@ -1,7 +1,7 @@
 #![no_std]
 
 #[cfg(all(feature = "debug-stub", target_arch = "arm"))]
-mod debug_stub;
+pub mod debug_stub;
 
 #[cfg(target_arch = "arm")]
 use core::panic::PanicInfo;
