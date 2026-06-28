@@ -3,5 +3,10 @@ name = "rp1-hal"
 version = "0.1.0"
 edition = "2024"
 
+[features]
+default = []
+debug-stub = []
+
 [dependencies]
+rp1-abi = { path = "../rp1-abi" }
 rp1-macros = { path = "../rp1-macros" }
