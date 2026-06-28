@@ -30,9 +30,4 @@ SECTIONS
 
   __image_end = .;
 
-  .rp1_debug_stub (NOLOAD) : ALIGN(4)
-  {
-    KEEP(*(.rp1_debug_stub .rp1_debug_stub.*));
-    . = ORIGIN(RP1_DEBUG_STUB) + LENGTH(RP1_DEBUG_STUB);
-  } > RP1_DEBUG_STUB
 }

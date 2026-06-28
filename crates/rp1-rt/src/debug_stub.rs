@@ -4,15 +4,6 @@ use core::sync::atomic::{AtomicU32, Ordering};
 
 use rp1_abi::debug::{self, DebugMailbox};
 
-#[repr(transparent)]
-pub struct DebugMailboxCell(DebugMailbox);
-
-unsafe impl Sync for DebugMailboxCell {}
-
-#[unsafe(link_section = ".rp1_debug_stub.mailbox")]
-#[used]
-pub static mut DEBUG_MAILBOX: DebugMailboxCell = DebugMailboxCell(DebugMailbox::new());
-
 static LAST_SEQ: AtomicU32 = AtomicU32::new(0);
 
 const _: () = assert!(core::mem::size_of::<DebugMailbox>() <= debug::MAILBOX_SIZE);
@@ -115,52 +106,23 @@ fn snapshot_core_regs(mailbox: &mut DebugMailbox) {
     let mut regs = [0u32; debug::MAILBOX_REG_COUNT];
     unsafe {
         core::arch::asm!(
-            "mov {r0_out}, r0",
-            "mov {r1_out}, r1",
-            "mov {r2_out}, r2",
-            "mov {r3_out}, r3",
-            "mov {r4_out}, r4",
-            "mov {r5_out}, r5",
-            "mov {r6_out}, r6",
-            "mov {r7_out}, r7",
-            "mov {r8_out}, r8",
-            "mov {r9_out}, r9",
-            "mov {r10_out}, r10",
-            "mov {r11_out}, r11",
-            "mov {r12_out}, r12",
             "mov {sp_out}, sp",
             "mov {lr_out}, lr",
             "mrs {xpsr_out}, xpsr",
-            r0_out = lateout(reg) regs[0],
-            r1_out = lateout(reg) regs[1],
-            r2_out = lateout(reg) regs[2],
-            r3_out = lateout(reg) regs[3],
-            r4_out = lateout(reg) regs[4],
-            r5_out = lateout(reg) regs[5],
-            r6_out = lateout(reg) regs[6],
-            r7_out = lateout(reg) regs[7],
-            r8_out = lateout(reg) regs[8],
-            r9_out = lateout(reg) regs[9],
-            r10_out = lateout(reg) regs[10],
-            r11_out = lateout(reg) regs[11],
-            r12_out = lateout(reg) regs[12],
             sp_out = lateout(reg) regs[13],
             lr_out = lateout(reg) regs[14],
             xpsr_out = lateout(reg) regs[16],
-            options(nomem, preserves_flags),
+            options(nostack, preserves_flags),
         );
     }
-    regs[15] = snapshot_core_regs as usize as u32;
+    regs[15] = snapshot_core_regs as *const () as usize as u32;
     for (dst, src) in mailbox.regs.iter_mut().zip(regs) {
         write_u32(dst, src);
     }
 }
 
 fn mailbox_mut() -> &'static mut DebugMailbox {
-    unsafe {
-        let ptr = core::ptr::addr_of_mut!(DEBUG_MAILBOX) as *mut DebugMailbox;
-        &mut *ptr
-    }
+    unsafe { &mut *(debug::MAILBOX_ADDR as *mut DebugMailbox) }
 }
 
 fn read_u32(src: &u32) -> u32 {
