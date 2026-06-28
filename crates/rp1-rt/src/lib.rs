@@ -1,5 +1,8 @@
 #![no_std]
 
+#[cfg(all(feature = "debug-stub", target_arch = "arm"))]
+pub mod debug_stub;
+
 #[cfg(target_arch = "arm")]
 use core::panic::PanicInfo;
 
@@ -47,6 +50,8 @@ pub unsafe extern "C" fn Reset() {
     unsafe {
         zero_bss();
     }
+    #[cfg(feature = "debug-stub")]
+    debug_stub::init();
     unsafe { rp1_entry() }
 }
 
@@ -64,6 +69,9 @@ unsafe fn zero_bss() {
 
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn DefaultHandler() {
+    #[cfg(all(feature = "debug-stub", target_arch = "arm"))]
+    debug_stub::fault();
+
     loop {
         core::hint::spin_loop();
     }
@@ -72,6 +80,9 @@ pub unsafe extern "C" fn DefaultHandler() {
 #[cfg(target_arch = "arm")]
 #[panic_handler]
 fn panic(_info: &PanicInfo<'_>) -> ! {
+    #[cfg(feature = "debug-stub")]
+    debug_stub::panic();
+
     loop {
         core::hint::spin_loop();
     }
