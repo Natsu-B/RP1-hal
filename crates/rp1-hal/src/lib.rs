@@ -1,5 +1,6 @@
 #![no_std]
 
+pub use rp1_abi::debug;
 pub use rp1_macros::main;
 
 pub mod addr;
